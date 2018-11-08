@@ -1,17 +1,12 @@
 <!doctype html>
 <!-- Website Designed by Zachary McGee -->
 <html lang="en">
-<?php include('load_page.php'); ?>
 <head>
   <meta charset="utf-8">
   <title>Scrapey - Online Web Scraping Application</title>
   <meta name="description" content="Scrapey">
   <meta name="author" content="Scrapey">
-
   <link rel="stylesheet" href="css/style.css">
-  <script src="js/jquery-3.3.1.min.js"></script>
-  <script src="js/load_page.js"></script>
-  <script src="js/element-selector.js"></script>
 </head>
 
 <body>
@@ -36,7 +31,8 @@
         <input type="text" id="input-site" class="input-text" placeholder="Web Address, e.g. www.google.com">
         <input type="button" id="button" class="input-button" value="Go" onclick="refreshData()">
       </div>
-        <div class="site-view" id="site-view" src=""></div>
+        <iframe name="iframe" id="iframe" scroll="no" class="site-view"></iframe>
+</div>
 
     </div>
   </div>
@@ -49,4 +45,8 @@
 
 
 </body>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="js/load_page.js"></script>
+  <script src="js/scrapey.js"></script>
+  <script src="js/element-selector.js"></script>
 </html>
