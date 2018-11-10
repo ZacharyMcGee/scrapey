@@ -105,7 +105,27 @@ body {
 }
 
 .card-body {
+  overflow: auto;
   width: 100%;
+}
+
+.large-button {
+  background-color: #a4d0c9;
+  border: none;
+  color: white;
+  padding: 10px;
+  padding-right: 6px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin-top: 0;
+  cursor: pointer;
+}
+
+.large-button p {
+  margin: 0px;
+  padding: left: 20px;
 }
 
 .small-button {
@@ -136,9 +156,38 @@ body {
   cursor: pointer;
 }
 
-.input {
-padding-top: 20px;
-padding-left: 20px;
+.input-task-name {
+  float: left;
+  height: 70px;
+  width: calc(50% - 20px); /* IE 9,10 , Chrome, Firefox */
+  width: -webkit-calc(50% - 20px); /*For safari 6.0*/
+  padding-top: 10px;
+  padding-left: 20px;
+}
+
+.input-task-url {
+  float: left;
+  height: 70px;
+  width: calc(50% - 20px); /* IE 9,10 , Chrome, Firefox */
+  width: -webkit-calc(50% - 20px); /*For safari 6.0*/
+  padding-top: 10px;
+  padding-left: 20px;
+}
+
+.input-task-name p {
+  margin: 0px;
+  padding-bottom: 5px;
+}
+
+.input-task-url p {
+  margin: 0px;
+  padding-bottom: 5px;
+}
+
+.input-task-button {
+  float: right;
+  padding-top: 20px;
+  padding-right: 20px;
 }
 
 .input-label {
@@ -155,10 +204,16 @@ padding-left: 20px;
 }
 
 .input-button {
-    margin-left: -60px;
-    height: 20px;
-    width: 50px;
-
+  background-color: #a4d0c9;
+  border: none;
+  color: white;
+  margin-left: -80px;
+  height: 37px;
+  width: 80px;
+  border-top: 1px solid #7d7d7d;
+  border-bottom: 1px solid #7d7d7d;
+  border-right: 1px solid #7d7d7d;
+  cursor: pointer;
 }
 
 .site-view {
@@ -215,14 +270,13 @@ height: 100%;
     display: block;
 }
 
-.sidebar-active {
-  color: #536079;
-  background-color: #a4d0c9;
+.sidebar-button {
+  color: #dcdcdc;
 }
 
-.sidebar-inactive {
-  color: #dcdcdc;
-  background-color: #536079;
+.active, .sidebar-button:hover {
+  color: #536079;
+  background-color: #a4d0c9;
 }
 
 .parent-link {

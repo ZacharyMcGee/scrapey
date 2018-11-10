@@ -1,0 +1,25 @@
+<div class="full-card">
+  <div class="card-title">
+    <div class="card-title-text">
+      <i class="fas fa-plus-circle" id="tasks"></i><span class="parent-link">Create New Task</span>
+    </div>
+    <div class="card-title-button">
+      <button class="small-button-red" id="cancelnewtask"><i class="fas fa-minus-circle fa-sm" style="padding-top:4px; padding-right:4px;"></i>Cancel</button>
+    </div>
+  </div>
+
+  <div class="card-body">
+    <div class="input-task-name">
+      <p>Name</p>
+      <input type="text" id="input-name" class="input-text" placeholder="Task Name, e.g. Google Scrape">
+    </div>
+    <div class="input-task-url">
+      <p>URL</p>
+      <input type="text" id="input-site" class="input-text" placeholder="Web Address, e.g. www.google.com">
+      <button class="input-button" id="loadsite"><i class="fas fa-arrow-down fa-sm" style="padding-top:4px; padding-right:4px;"></i>Load</button>
+    </div>
+
+    <iframe name="iframe" id="iframe" scroll="no" class="site-view"></iframe>
+
+  </div>
+</div>

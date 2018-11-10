@@ -11,13 +11,13 @@
 </head>
 
 <body>
-  <div class="sidebar">
+  <div id="sidebar" class="sidebar">
     <div class="sidebar-header">
       <img src="images/logo.png" alt="logo" />
     </div>
     <div class="sidebar-menu">
-      <a href="#"><i class="fas fa-tachometer-alt"></i><span class="parent-link">Dashboard</span></a>
-      <a href="#" class="sidebar-inactive" id="tasks"><i class="fas fa-tasks"></i><span class="parent-link">Tasks</span></a>
+      <a href="#" class="sidebar-button active" id="dashboard"><i class="fas fa-tachometer-alt"></i><span class="parent-link">Dashboard</span></a>
+      <a href="#" class="sidebar-button" id="tasks"><i class="fas fa-tasks"></i><span class="parent-link">Tasks</span></a>
     </div>
 </div>
 
@@ -37,20 +37,7 @@
 
   <div class="main" id="main">
     <div class="content" id="content">
-      <div class="full-card">
-        <div class="card-title">
-          <div class="card-title-text">
-            <i class="fas fa-plus-circle"></i><span class="parent-link">Create New Task</span>
-          </div>
-          <div class="card-title-button">
-            <button class="small-button-red"><i class="fas fa-minus-circle fa-sm" style="padding-top:4px; padding-right:4px;"></i></i>Cancel</button>
-          </div>
-        </div>
 
-        <div class="card-body">
-
-        </div>
-      </div>
     </div>
   </div>
 </div>
@@ -65,6 +52,6 @@
 </body>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
   <script src="js/load_page.js"></script>
-  <script src="js/scrapey.js"></script>
+  <script id="scrapey" src="js/scrapey.js"></script>
   <script src="js/element-selector.js"></script>
 </html>
