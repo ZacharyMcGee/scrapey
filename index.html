@@ -7,6 +7,7 @@
   <meta name="description" content="Scrapey">
   <meta name="author" content="Scrapey">
   <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
 </head>
 
 <body>
@@ -15,10 +16,8 @@
       <img src="images/logo.png" alt="logo" />
     </div>
     <div class="sidebar-menu">
-      <a href="#">About</a>
-      <a href="#">Services</a>
-      <a href="#">Clients</a>
-      <a href="#">Contact</a>
+      <a href="#"><i class="fas fa-tachometer-alt"></i><span class="parent-link">Dashboard</span></a>
+      <a href="#" class="sidebar-inactive" id="tasks"><i class="fas fa-tasks"></i><span class="parent-link">Tasks</span></a>
     </div>
 </div>
 
@@ -28,7 +27,7 @@
 
     <div class="header-menu-bar">
       <ul>
-        <li><a href="#" onClick="scrollToSection('#home')">Home</a></li>
+        <li><a href="#" id="button1">Home</a></li>
         <li><a href="#" onClick="scrollToSection('#description')">Link</a></li>
         <li><a href="#" onClick="scrollToSection('#definition')">Link</a></li>
         <li><a href="#" onClick="scrollToSection('#design')">Link</a></li>
@@ -37,20 +36,28 @@
   </div>
 
   <div class="main" id="main">
-    <div class="content">
-      <div class="input">
-        <input type="text" id="input-site" class="input-text" placeholder="Web Address, e.g. www.google.com">
-        <input type="button" id="button" class="input-button" value="Go" onclick="refreshData()">
-      </div>
-        <iframe name="iframe" id="iframe" scroll="no" class="site-view"></iframe>
-</div>
+    <div class="content" id="content">
+      <div class="full-card">
+        <div class="card-title">
+          <div class="card-title-text">
+            <i class="fas fa-plus-circle"></i><span class="parent-link">Create New Task</span>
+          </div>
+          <div class="card-title-button">
+            <button class="small-button-red"><i class="fas fa-minus-circle fa-sm" style="padding-top:4px; padding-right:4px;"></i></i>Cancel</button>
+          </div>
+        </div>
 
+        <div class="card-body">
+
+        </div>
+      </div>
     </div>
   </div>
+</div>
 
   <div class="footer">
     <div class="footer_text">
-      <p>Website Template by Zachary McGee</p>
+
     </div>
   </div>
 
@@ -60,5 +67,4 @@
   <script src="js/load_page.js"></script>
   <script src="js/scrapey.js"></script>
   <script src="js/element-selector.js"></script>
-  <script src="https://unpkg.com/ionicons@4.4.6/dist/ionicons.js"></script>
 </html>
