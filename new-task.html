@@ -21,5 +21,34 @@
 
     <iframe name="iframe" id="iframe" scroll="no" class="site-view"></iframe>
 
+    <div class="task-creator">
+        <div class="tab">
+          <button class="tablinks active" onclick="changeTab(event, 'actions')">Actions</button>
+          <button class="tablinks" onclick="changeTab(event, 'source')">Source</button>
+          <button class="tablinks" onclick="changeTab(event, '3')">Next</button>
+        </div>
+
+        <div id="actions" class="tabcontent" style="display: block;">
+          <div id="action-tree">
+            <ul>
+              <li>Root node 1
+            <ul>
+              <li id="child_node_1">Child node 1</li>
+              <li>Child node 2</li>
+            </ul>
+            </li>
+              <li>Root node 2</li>
+            </ul>
+          </div>
+        </div>
+
+        <div id="source" class="tabcontent">
+
+        </div>
+
+        <div id="3" class="tabcontent">
+
+        </div>
+      </div>
   </div>
 </div>

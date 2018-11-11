@@ -323,6 +323,53 @@ height: 100%;
   background-color: #ffffff;
 }
 
+.task-creator {
+  padding-top: 20px;
+  margin-left: 20px;
+  margin-right: 20px;
+  width: calc(100% - 40px); /* IE 9,10 , Chrome, Firefox */
+  width: -webkit-calc(100% - 40px); /*For safari 6.0*/
+}
+
+.tab {
+    overflow: hidden;
+    border: 1px solid #ccc;
+    background-color: #f3f3f3;
+    color: #7d7d7d;
+    font-family: 'Open Sans', sans-serif;
+}
+
+.tab button {
+    background-color: inherit;
+    float: left;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    padding: 0px 16px;
+    transition: 0.3s;
+    font-size: 17px;
+    border-bottom: 2px solid #f3f3f3;
+    color: #7d7d7d;
+    font-family: 'Open Sans', sans-serif;
+}
+
+.tab button:hover {
+  border-bottom: 2px solid #a4d0c9;
+  background-color: #ddd;
+}
+
+.tab button.active {
+  border-bottom: 2px solid #a4d0c9;
+  background-color: #ccc;
+}
+
+.tabcontent {
+    display: none;
+    padding: 6px 12px;
+    border: 1px solid #ccc;
+    border-top: none;
+}
+
 .footer {
   margin-left: 160px;
 }
