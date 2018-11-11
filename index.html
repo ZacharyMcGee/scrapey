@@ -7,6 +7,7 @@
   <meta name="description" content="Scrapey">
   <meta name="author" content="Scrapey">
   <link rel="stylesheet" href="css/style.css">
+  <link href="css/library/prism.css" rel="stylesheet" />
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
 </head>
 
@@ -37,6 +38,23 @@
 
   <div class="main" id="main">
     <div class="content" id="content">
+      <div class="full-card">
+        <div class="card-title">
+          <div class="card-title-text">
+            <i class="fas fa-tasks"></i><span class="parent-link">Tasks</span>
+          </div>
+          <div class="card-title-button">
+            <button id="newtask" class="small-button"><i class="fas fa-plus-circle fa-sm" style="padding-top:4px; padding-right:4px;"></i></i>New Task</button>
+          </div>
+        </div>
+
+        <div class="card-body">
+          <script src="prism.js"></script>
+          <pre><code class="language-markup">
+              &lt;p class="red">red text &lt;/p>
+          </code></pre>
+        </div>
+      </div>
 
     </div>
   </div>
@@ -53,5 +71,6 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
   <script src="js/load_page.js"></script>
   <script id="scrapey" src="js/scrapey.js"></script>
+  <script src="js/library/prism.js"></script>
   <script src="js/element-selector.js"></script>
 </html>

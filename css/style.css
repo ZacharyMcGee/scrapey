@@ -70,6 +70,7 @@ body {
 .content {
   float: left;
   width: 100%;
+  padding-bottom: 40px;
 }
 
 .full-card {
@@ -316,6 +317,10 @@ height: 100%;
   border: 1px solid #e6e6e6;
   text-align: left;
   padding: 5px;
+}
+
+.language-markup {
+  background-color: #ffffff;
 }
 
 .footer {
