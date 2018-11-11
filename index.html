@@ -8,6 +8,7 @@
   <meta name="author" content="Scrapey">
   <link rel="stylesheet" href="css/style.css">
   <link href="css/library/prism.css" rel="stylesheet" />
+  <link rel="stylesheet" href="js/library/themes/default/style.min.css" />
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
 </head>
 
@@ -49,10 +50,18 @@
         </div>
 
         <div class="card-body">
-          <script src="prism.js"></script>
-          <pre><code class="language-markup">
-              &lt;p class="red">red text &lt;/p>
-          </code></pre>
+          <div id="action-tree">
+          <ul>
+  <li>Root node 1
+    <ul>
+      <li id="child_node_1">Child node 1</li>
+      <li>Child node 2</li>
+    </ul>
+  </li>
+  <li>Root node 2</li>
+</ul>
+</div>
+          </div>
         </div>
       </div>
 
@@ -70,6 +79,7 @@
 </body>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
   <script src="js/load_page.js"></script>
+  <script src="js/library/jstree.js"></script>
   <script id="scrapey" src="js/scrapey.js"></script>
   <script src="js/library/prism.js"></script>
   <script src="js/element-selector.js"></script>
