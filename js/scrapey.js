@@ -102,45 +102,104 @@ $("#cancelnewtask").click(function(){
     }});
 });
 
+ $(".panel-left").resizable({
+   handleSelector: ".splitter",
+   resizeHeight: false
+ });
+
+ $(".panel-top").resizable({
+   handleSelector: ".splitter-horizontal",
+   resizeWidth: false
+ });
+
+
 $("#loadsite").click(function(){
     refreshData();
 });
 
-$('#action-tree').jstree({
-  "core" : {
-    "animation" : 0,
-    "check_callback" : true,
-    "themes" : { "stripes" : true },
-    'data' : {
-      'url' : function (node) {
-        return node.id === '#' ?
-          'ajax_demo_roots.json' : 'ajax_demo_children.json';
-      },
-      'data' : function (node) {
-        return { 'id' : node.id };
-      }
-    }
-  },
-  "types" : {
-    "#" : {
-      "max_children" : 1,
-      "max_depth" : 4,
-      "valid_children" : ["root"]
-    },
-    "root" : {
-      "icon" : "/static/3.3.7/assets/images/tree_icon.png",
-      "valid_children" : ["default"]
-    },
-    "default" : {
-      "valid_children" : ["default","file"]
-    },
-    "file" : {
-      "icon" : "glyphicon glyphicon-file",
-      "valid_children" : []
-    }
-  },
-  "plugins" : [
-    "contextmenu", "dnd", "search",
-    "state", "types", "wholerow"
-  ]
+        $(function () {
+
+            var jsondata = [
+                           { "id": "ajson1", "parent": "#", "text": "Simple root node" },
+                           { "id": "ajson2", "parent": "#", "text": "Root node 2" },
+                           { "id": "ajson3", "parent": "ajson2", "text": "Child 1" },
+                           { "id": "ajson4", "parent": "ajson2", "text": "Child 2" },
+            ];
+
+            createJSTree(jsondata);
+        });
+
+        function createJSTree(jsondata) {
+            $('#action-tree').jstree({
+                "core": {
+                    "check_callback": true,
+                    'data': jsondata
+
+                },
+                "plugins": ["contextmenu"],
+                "contextmenu": {
+                    "items": function ($node) {
+                        var tree = $("#action-tree").jstree(true);
+                        return {
+                            "Create": {
+                                "separator_before": false,
+                                "separator_after": true,
+                                "label": "Create",
+                                "action": false,
+                                "submenu": {
+                                    "File": {
+                                        "seperator_before": false,
+                                        "seperator_after": false,
+                                        "label": "File",
+                                        action: function (obj) {
+                                            $node = tree.create_node($node, { text: 'New File', type: 'file', icon: 'images/logo.png' });
+                                            tree.deselect_all();
+                                            tree.select_node($node);
+                                        }
+                                    },
+                                    "Folder": {
+                                        "seperator_before": false,
+                                        "seperator_after": false,
+                                        "label": "Folder",
+                                        action: function (obj) {
+                                            $node = tree.create_node($node, { text: 'New Folder', type: 'default' });
+                                            tree.deselect_all();
+                                            tree.select_node($node);
+                                        }
+                                    }
+                                }
+                            },
+                            "Rename": {
+                                "separator_before": false,
+                                "separator_after": false,
+                                "label": "Rename",
+                                "action": function (obj) {
+                                    tree.edit($node);
+                                }
+                            },
+                            "Remove": {
+                                "separator_before": false,
+                                "separator_after": false,
+                                "label": "Remove",
+                                "action": function (obj) {
+                                    tree.delete_node($node);
+                                }
+                            }
+                        };
+                    }
+                }
+            });
+        }
+
+$("#newlink").click(function(){
+var position = 'inside';
+var parent = $('#action-tree').jstree('get_selected');
+var tree = $("#action-tree").jstree(true);
+var newNode = { text: 'Link', type: 'file', icon: 'fas fa-link' };
+var node = $('#action-tree').jstree(
+    "create_node", parent, newNode, position, false, false);
+$('#action-tree').jstree(
+    "deselect_all");
+$('#action-tree').jstree(
+    "select_node", node, false, false);
 });
