@@ -56,12 +56,21 @@ function refreshData(){
         iframe.contentWindow.document.open();
         iframe.contentWindow.document.write(response);
         iframe.contentWindow.document.close();
+        loadTree(site);
       } else {
 
       };
     }
 }
   }
+
+function loadTree(site){
+            var jsondata = [
+                           { "id": "ajson1", "parent": "#", "text": site , "icon": "fas fa-link" },
+            ];
+
+            createJSTree(jsondata);
+}
 
 function validateURL(url){
 var expression = /[-a-zA-Z0-9@:%_\+.~#?&//=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_\+.~#?&//=]*)?/gi;
@@ -117,79 +126,69 @@ $("#loadsite").click(function(){
     refreshData();
 });
 
-        $(function () {
 
-            var jsondata = [
-                           { "id": "ajson1", "parent": "#", "text": "Simple root node" },
-                           { "id": "ajson2", "parent": "#", "text": "Root node 2" },
-                           { "id": "ajson3", "parent": "ajson2", "text": "Child 1" },
-                           { "id": "ajson4", "parent": "ajson2", "text": "Child 2" },
-            ];
 
-            createJSTree(jsondata);
-        });
+function createJSTree(jsondata) {
+    $('#action-tree').jstree({
+        "core": {
+            "check_callback": true,
+            'data': jsondata
 
-        function createJSTree(jsondata) {
-            $('#action-tree').jstree({
-                "core": {
-                    "check_callback": true,
-                    'data': jsondata
-
-                },
-                "plugins": ["contextmenu"],
-                "contextmenu": {
-                    "items": function ($node) {
-                        var tree = $("#action-tree").jstree(true);
-                        return {
-                            "Create": {
-                                "separator_before": false,
-                                "separator_after": true,
-                                "label": "Create",
-                                "action": false,
-                                "submenu": {
-                                    "File": {
-                                        "seperator_before": false,
-                                        "seperator_after": false,
-                                        "label": "File",
-                                        action: function (obj) {
-                                            $node = tree.create_node($node, { text: 'New File', type: 'file', icon: 'images/logo.png' });
-                                            tree.deselect_all();
-                                            tree.select_node($node);
-                                        }
-                                    },
-                                    "Folder": {
-                                        "seperator_before": false,
-                                        "seperator_after": false,
-                                        "label": "Folder",
-                                        action: function (obj) {
-                                            $node = tree.create_node($node, { text: 'New Folder', type: 'default' });
-                                            tree.deselect_all();
-                                            tree.select_node($node);
-                                        }
-                                    }
-                                }
+        },
+        "plugins": ["contextmenu"],
+        "contextmenu": {
+          "items": function ($node) {
+                var tree = $("#action-tree").jstree(true);
+                return {
+                    "Create": {
+                        "separator_before": false,
+                        "separator_after": true,
+                        "label": "Create",
+                        "action": false,
+                        "submenu": {
+                            "File": {
+                                "seperator_before": false,
+                                "seperator_after": false,
+                                "label": "File",
+                                 action: function (obj) {
+                                    $node = tree.create_node($node, { text: 'New File', type: 'file', icon: 'images/logo.png' });
+                                    tree.deselect_all();
+                                    tree.select_node($node);
+                                  }
                             },
-                            "Rename": {
-                                "separator_before": false,
-                                "separator_after": false,
-                                "label": "Rename",
-                                "action": function (obj) {
-                                    tree.edit($node);
-                                }
-                            },
-                            "Remove": {
-                                "separator_before": false,
-                                "separator_after": false,
-                                "label": "Remove",
-                                "action": function (obj) {
-                                    tree.delete_node($node);
+                            "Folder": {
+                                "seperator_before": false,
+                                "seperator_after": false,
+                                "label": "Folder",
+                                action: function (obj) {
+                                    $node = tree.create_node($node, { text: 'New Folder', type: 'default' });
+                                    tree.deselect_all();
+                                    tree.select_node($node);
                                 }
                             }
-                        };
+                        }
+                    },
+                    "Rename": {
+                        "separator_before": false,
+                        "separator_after": false,
+                        "label": "Rename",
+                        "action": function (obj) {
+                            tree.edit($node);
+                        }
+                  },
+                  "Remove": {
+                        "separator_before": false,
+                        "separator_after": false,
+                        "label": "Remove",
+                        "action": function (obj) {
+                            tree.delete_node($node);
+                        }
                     }
-                }
-            });
+                };
+            }
         }
+    });
+}
 
 $("#newlink").click(function(){
 var position = 'inside';
