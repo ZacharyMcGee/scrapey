@@ -1,7 +1,12 @@
 // SIDEBAR BUTTONS
-
+var localDataIndex = 0;
 var sidebar = document.getElementById("sidebar");
 var buttons = sidebar.getElementsByClassName("sidebar-button");
+
+function Element(eName, eType){
+     this.Name = eName;
+     this.Type = eType;
+}
 
 for (var i = 0; i < buttons.length; i++) {
   buttons[i].addEventListener("click", function() {
@@ -9,6 +14,14 @@ for (var i = 0; i < buttons.length; i++) {
     current[0].className = current[0].className.replace(" active", "");
     this.className += " active";
   });
+}
+
+window.addEventListener("message", receiveMessage, false);
+ function receiveMessage(event){
+    var source = event.source.frameElement; //this is the iframe that sent the message
+    var message = event.data; //this is the message
+    alert(message);
+    //do something with message
 }
 
 function changeTab(evt, tabName) {
@@ -66,7 +79,7 @@ function refreshData(){
 
 function loadTree(site){
             var jsondata = [
-                           { "id": "ajson1", "parent": "#", "text": site , "icon": "fas fa-link" },
+                           { "id": "root", "parent": "#", "text": site , "icon": "fas fa-link" },
             ];
 
             createJSTree(jsondata);
@@ -82,6 +95,13 @@ if (site.match(regex)) {
 } else {
   return false;
 }
+}
+
+function openElement(){
+    console.log("HEY");
+    $.ajax({url: "edit-element.html", success: function(result){
+        $("#panel-right").html(result);
+    }});
 }
 
 $("#tasks").click(function(){
@@ -190,11 +210,14 @@ function createJSTree(jsondata) {
     });
 }
 
-$("#newlink").click(function(){
+// Create a new element
+
+$("#new-element").click(function(){
 var position = 'inside';
 var parent = $('#action-tree').jstree('get_selected');
 var tree = $("#action-tree").jstree(true);
-var newNode = { text: 'Link', type: 'file', icon: 'fas fa-link' };
+var newNode = { 'id': '0', text: 'Link', type: 'file', icon: 'fas fa-link', 'data': { "data_array" : ["The Name", "The Type", "Something Else"]  } };
+
 var node = $('#action-tree').jstree(
     "create_node", parent, newNode, position, false, false);
 $('#action-tree').jstree(
@@ -202,3 +225,18 @@ $('#action-tree').jstree(
 $('#action-tree').jstree(
     "select_node", node, false, false);
 });
+
+// Selecting an element
+
+$("#action-tree").bind(
+        "select_node.jstree", function(evt, data){
+            var id = $('#action-tree').jstree('get_selected', true)[0].id;
+            if(id == "root"){
+               console.log("AT ROOT");
+            }
+            else
+            {
+               console.log($('#action-tree').jstree(true).get_node(id).data.data_array);
+            }
+        }
+);
