@@ -157,6 +157,113 @@ body {
   cursor: pointer;
 }
 
+.task-toolbar {
+  padding-bottom: 10px;
+}
+
+.toolbar-button-new {
+  background-color: #a4d0c9;
+  border: none;
+  color: white;
+  padding: 4px;
+  padding-right: 6px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 12px;
+  margin-top: 0;
+  cursor: pointer;
+}
+
+.toolbar-button-remove {
+  background-color: #e8aeae;
+  border: none;
+  color: white;
+  padding: 4px;
+  padding-right: 6px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 12px;
+  margin-top: 0;
+  cursor: pointer;
+}
+
+.panel-container {
+  display: flex;
+  flex-direction: row;
+  overflow: hidden;
+
+  /* avoid browser level touch actions */
+  xtouch-action: none;
+}
+
+.panel-left {
+  flex: 0 0 auto;
+  /* only manually resize */
+  padding: 10px;
+  width: 300px;
+  min-height: 200px;
+  min-width: 150px;
+  white-space: nowrap;
+  background: #FFF;
+  color: 7d7d7d;
+}
+
+.splitter {
+  flex: 0 0 auto;
+  width: 11px;
+  background: url(http://zmcgee.com/scrapey/images/splitter.png) center center no-repeat #535353;
+  min-height: 200px;
+  cursor: col-resize;
+}
+
+.panel-right {
+  flex: 1 1 auto;
+  /* resizable */
+  padding: 10px;
+  width: 100%;
+  min-height: 200px;
+  min-width: 200px;
+  background: #eee;
+}
+
+.edit-element p {
+  margin: 0px;
+}
+
+.edit-element-id {
+  width: calc(100% - 10px); /* IE 9,10 , Chrome, Firefox */
+  width: -webkit-calc(50% - 10px); /*For safari 6.0*/
+}
+
+.edit-element-textbox {
+  width: calc(100% - 20px);
+}
+
+.edit-element-type {
+  margin-top: 10px;
+  width: calc(100% - 13px); /* IE 9,10 , Chrome, Firefox */
+  width: -webkit-calc(50% - 10px); /*For safari 6.0*/
+}
+
+.edit-element-type select {
+  width: calc(100% - 10px);
+  padding: 2px;
+}
+
+.edit-element-checkbox {
+  margin-top: 10px;
+}
+
+.edit-element-checkbox p {
+  float: left;
+}
+
+.edit-element-buttons {
+  margin-top: 45px;
+}
+
 .input-task-name {
   float: left;
   height: 70px;
@@ -189,6 +296,18 @@ body {
   float: right;
   padding-top: 20px;
   padding-right: 20px;
+}
+
+.run-button {
+  float: right;
+  margin-top: 10px;
+  margin-right: 20px;
+  background-color: #a4d0c9;
+  border: none;
+  color: white;
+  height: 37px;
+  width: 80px;
+  cursor: pointer;
 }
 
 .input-label {
@@ -365,13 +484,9 @@ height: 100%;
 
 .tabcontent {
     display: none;
-    padding: 6px 12px;
+    padding: 0px;
     border: 1px solid #ccc;
     border-top: none;
-}
-
-.task-toolbar {
-  
 }
 
 .footer {
