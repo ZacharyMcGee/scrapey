@@ -97,10 +97,44 @@ if (site.match(regex)) {
 }
 }
 
-function openElement(){
-    console.log("HEY");
+function saveElement() {
+console.log("SAVED");
+  var selectedNode = $('#action-tree').jstree('get_selected', true)[0];
+  var id = selectedNode.id;
+  var elementId = $("#element-id").val();
+  var elementType = $("#element-type").val();
+
+  $('#action-tree').jstree(true).get_node(id).data.data_array[0] = elementId;
+  $('#action-tree').jstree(true).get_node(id).data.data_array[1] = elementType;
+
+  switch(elementType) {
+    case "text":
+        $("#action-tree").jstree(true).set_icon(id, 'fas fa-font');
+        break;
+    case "link":
+        $("#action-tree").jstree(true).set_icon(id, 'fas fa-link');
+        break;
+    case "image":
+        $("#action-tree").jstree(true).set_icon(id, 'far fa-image');
+        break;
+    default:
+        $("#action-tree").jstree(true).set_icon(id, 'fas fa-font');
+        break;
+  }
+
+  $('#action-tree').jstree("rename_node", selectedNode, elementId);
+}
+
+function createElement() {
+
+}
+
+function loadElement(id, type) {
+    console.log(id);
     $.ajax({url: "edit-element.html", success: function(result){
         $("#panel-right").html(result);
+        $("#element-id").val(id);
+        $("#element-type").val(type);
     }});
 }
 
@@ -145,8 +179,6 @@ $("#cancelnewtask").click(function(){
 $("#loadsite").click(function(){
     refreshData();
 });
-
-
 
 function createJSTree(jsondata) {
     $('#action-tree').jstree({
@@ -216,7 +248,7 @@ $("#new-element").click(function(){
 var position = 'inside';
 var parent = $('#action-tree').jstree('get_selected');
 var tree = $("#action-tree").jstree(true);
-var newNode = { 'id': '0', text: 'Link', type: 'file', icon: 'fas fa-link', 'data': { "data_array" : ["The Name", "The Type", "Something Else"]  } };
+var newNode = { text: 'Link', type: 'file', icon: 'fas fa-font', 'data': { "data_array" : ["The Name", "text", "Unsaved"]  } };
 
 var node = $('#action-tree').jstree(
     "create_node", parent, newNode, position, false, false);
@@ -236,6 +268,10 @@ $("#action-tree").bind(
             }
             else
             {
+               var elementId = $('#action-tree').jstree(true).get_node(id).data.data_array[0];
+               var elementType = $('#action-tree').jstree(true).get_node(id).data.data_array[1];
+
+               loadElement(elementId, elementType);
                console.log($('#action-tree').jstree(true).get_node(id).data.data_array);
             }
         }
