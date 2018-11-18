@@ -8,6 +8,13 @@ function Element(eName, eType){
      this.Type = eType;
 }
 
+function runScrapey(){
+var jsonNodes = $('#action-tree').jstree(true).get_json('#', { flat: true });
+$.each(jsonNodes, function (i, val) {
+    console.log($(val).attr('text'));
+})
+}
+
 for (var i = 0; i < buttons.length; i++) {
   buttons[i].addEventListener("click", function() {
     var current = document.getElementsByClassName("active");
