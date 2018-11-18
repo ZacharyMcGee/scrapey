@@ -1,1 +1,23 @@
-<p>Element Edit</p>
+<div class="edit-element">
+  <div class="edit-element-id">
+    <p>ID</p><input type="text" id="element-id" class="edit-element-textbox" value="">
+  </div>
+
+  <div class="edit-element-type">
+    <p>Type</p><select class="element-type" id="element-type">
+      <option value="text">Text</option>
+      <option value="link">Link</option>
+      <option value="image">Image</option>
+    </select>
+  </div>
+
+  <div class="edit-element-checkbox">
+    <p>Multiple</p><input type="checkbox" name="vehicle1" value="Bike">
+  </div>
+
+  <div class="edit-element-buttons">
+    <button class="toolbar-button-new" id="save-element" onclick="saveElement()"><i class="fas fa-plus-circle fa-sm" style="padding-top:4px; padding-right:4px;"></i>Save Element</button>
+
+    <button class="toolbar-button-remove" id="remove-element"><i class="fas fa-minus-circle fa-sm" style="padding-top:4px; padding-right:4px;"></i>Remove Element</button>
+  </div>
+</div>
