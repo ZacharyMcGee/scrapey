@@ -2,6 +2,7 @@
 var localDataIndex = 0;
 var sidebar = document.getElementById("sidebar");
 var buttons = sidebar.getElementsByClassName("sidebar-button");
+var pageData;
 
 function Element(eName, eType){
      this.Name = eName;
@@ -10,9 +11,20 @@ function Element(eName, eType){
 
 function runScrapey(){
 var jsonNodes = $('#action-tree').jstree(true).get_json('#', { flat: true });
+var site;
 $.each(jsonNodes, function (i, val) {
-    console.log($(val).attr('text'));
-})
+    if(i != 0) {
+       var tag = val.data.data_array[0];
+       var type = val.data.data_array[1];
+       var name = val.data.data_array[2];
+       console.log(site);
+       getData(site, tag, type, name);
+    }
+    else
+    {
+       site = val.text;
+    }
+  })
 }
 
 for (var i = 0; i < buttons.length; i++) {
@@ -58,6 +70,24 @@ function loadSite(site){
   document.getElementById('iframe').src = "www." + site;
 }
 
+function getData(site, tag, selector, name){
+    console.log("getData");
+    var xmlhttp = new XMLHttpRequest();
+    xmlhttp.open("GET", "php/get_data.php?site=" + site + "&tag=" + tag + "&selector=" + selector + "&name=" + name, true);
+    xmlhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    xmlhttp.send();
+    console.log("send");
+    xmlhttp.onreadystatechange = function() {
+      if (this.readyState === 4 && this.status === 200) {
+        var response = this.responseText;
+        console.log("done");
+        console.log(response);
+      } else {
+          console.log(this.status);
+      };
+   }
+}
+
 function refreshData(){
     var site = document.getElementById("input-site").value;
     console.log(site);
@@ -73,6 +103,7 @@ function refreshData(){
       if (this.readyState === 4 && this.status === 200) {
         iframe.src = "about:blank";
         var response = this.responseText;
+        pageData = response;
         iframe.contentWindow.document.open();
         iframe.contentWindow.document.write(response);
         iframe.contentWindow.document.close();
@@ -105,43 +136,29 @@ if (site.match(regex)) {
 }
 
 function saveElement() {
-console.log("SAVED");
   var selectedNode = $('#action-tree').jstree('get_selected', true)[0];
   var id = selectedNode.id;
-  var elementId = $("#element-id").val();
+  var elementTag = $("#element-tag").val();
   var elementType = $("#element-type").val();
+  var elementName = $("#element-name").val();
 
-  $('#action-tree').jstree(true).get_node(id).data.data_array[0] = elementId;
+  $('#action-tree').jstree(true).get_node(id).data.data_array[0] = elementTag;
   $('#action-tree').jstree(true).get_node(id).data.data_array[1] = elementType;
+  $('#action-tree').jstree(true).get_node(id).data.data_array[2] = elementName;
 
-  switch(elementType) {
-    case "text":
-        $("#action-tree").jstree(true).set_icon(id, 'fas fa-font');
-        break;
-    case "link":
-        $("#action-tree").jstree(true).set_icon(id, 'fas fa-link');
-        break;
-    case "image":
-        $("#action-tree").jstree(true).set_icon(id, 'far fa-image');
-        break;
-    default:
-        $("#action-tree").jstree(true).set_icon(id, 'fas fa-font');
-        break;
-  }
-
-  $('#action-tree').jstree("rename_node", selectedNode, elementId);
+  $('#action-tree').jstree("rename_node", selectedNode, elementTag);
 }
 
 function createElement() {
 
 }
 
-function loadElement(id, type) {
-    console.log(id);
+function loadElement(tag, type, name) {
     $.ajax({url: "edit-element.html", success: function(result){
         $("#panel-right").html(result);
-        $("#element-id").val(id);
+        $("#element-tag").val(tag);
         $("#element-type").val(type);
+        $("#element-name").val(name);
     }});
 }
 
@@ -249,6 +266,10 @@ function createJSTree(jsondata) {
     });
 }
 
+$("#action-tree").on('loaded.jstree', function() {
+    $('#action-tree').jstree('select_node', 'root');
+});
+
 // Create a new element
 
 $("#new-element").click(function(){
@@ -275,10 +296,11 @@ $("#action-tree").bind(
             }
             else
             {
-               var elementId = $('#action-tree').jstree(true).get_node(id).data.data_array[0];
+               var elementTag = $('#action-tree').jstree(true).get_node(id).data.data_array[0];
                var elementType = $('#action-tree').jstree(true).get_node(id).data.data_array[1];
+               var elementName = $('#action-tree').jstree(true).get_node(id).data.data_array[2];
 
-               loadElement(elementId, elementType);
+               loadElement(elementTag, elementType, elementName);
                console.log($('#action-tree').jstree(true).get_node(id).data.data_array);
             }
         }

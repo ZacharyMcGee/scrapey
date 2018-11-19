@@ -159,20 +159,28 @@ body {
 
 .task-toolbar {
   padding-bottom: 10px;
+  margin-left: 10px;
 }
 
 .toolbar-button-new {
-  background-color: #a4d0c9;
-  border: none;
-  color: white;
-  padding: 4px;
-  padding-right: 6px;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  font-size: 12px;
-  margin-top: 0;
-  cursor: pointer;
+background-color: #f3f3f3;
+border: none;
+color: #7d7d7d;
+padding: 4px;
+margin-top: 10px;
+padding-right: 8px;
+padding-right: 6px;
+text-align: center;
+text-decoration: none;
+display: inline-block;
+font-size: 12px;
+cursor: pointer;
+width: 10%;
+border-bottom: 1px solid #ccc;
+border-right: 1px solid #ccc;
+border-top: 1px solid #f6f6f6;
+border-left: 1px solid #f9f9f9;
+min-width: 60px;
 }
 
 .toolbar-button-remove {
@@ -201,13 +209,23 @@ body {
 .panel-left {
   flex: 0 0 auto;
   /* only manually resize */
-  padding: 10px;
+  padding: 0px;
   width: 300px;
   min-height: 200px;
   min-width: 150px;
   white-space: nowrap;
-  background: #FFF;
+  background: #EEE;
   color: 7d7d7d;
+}
+
+.action-tree {
+margin-left: 10px;
+margin-right: 10px;
+background-color: white;
+padding-top: 10px;
+padding-bottom: 10px;
+border: 1px solid #ccc;
+min-height: 140px;
 }
 
 .splitter {
@@ -232,9 +250,8 @@ body {
   margin: 0px;
 }
 
-.edit-element-id {
-  width: calc(100% - 10px); /* IE 9,10 , Chrome, Firefox */
-  width: -webkit-calc(50% - 10px); /*For safari 6.0*/
+.edit-element-tag {
+
 }
 
 .edit-element-textbox {
@@ -242,9 +259,11 @@ body {
 }
 
 .edit-element-type {
-  margin-top: 10px;
-  width: calc(100% - 13px); /* IE 9,10 , Chrome, Firefox */
-  width: -webkit-calc(50% - 10px); /*For safari 6.0*/
+  margin-top: 5px;
+}
+
+.edit-element-name {
+  margin-top: 5px;
 }
 
 .edit-element-type select {
@@ -261,7 +280,7 @@ body {
 }
 
 .edit-element-buttons {
-  margin-top: 45px;
+  margin-top: 0px;
 }
 
 .input-task-name {
@@ -478,9 +497,10 @@ height: 100%;
 }
 
 .tab button.active {
-  border-bottom: 2px solid #a4d0c9;
-  background-color: #ccc;
+  border-bottom: 2px solid #ccc;
+  background-color: #dbdbdb;
 }
+
 
 .tabcontent {
     display: none;
