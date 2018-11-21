@@ -17,8 +17,11 @@ $.each(jsonNodes, function (i, val) {
        var tag = val.data.data_array[0];
        var type = val.data.data_array[1];
        var name = val.data.data_array[2];
+       var index = val.data.Index[0];
+       var indexFrom = val.data.Index[1];
+       var indexTo = val.data.Index[2];
        console.log(site);
-       getData(site, tag, type, name);
+       getData(site, tag, type, name, index, indexFrom, indexTo);
     }
     else
     {
@@ -70,10 +73,10 @@ function loadSite(site){
   document.getElementById('iframe').src = "www." + site;
 }
 
-function getData(site, tag, selector, name){
+function getData(site, tag, selector, name, index, indexFrom, indexTo){
     console.log("getData");
     var xmlhttp = new XMLHttpRequest();
-    xmlhttp.open("GET", "php/get_data.php?site=" + site + "&tag=" + tag + "&selector=" + selector + "&name=" + name, true);
+    xmlhttp.open("GET", "php/get_data.php?site=" + site + "&tag=" + tag + "&selector=" + selector + "&name=" + name + "&index=" + index + "&indexfrom=" + indexFrom + "&indexto=" + indexTo, true);
     xmlhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
     xmlhttp.send();
     console.log("send");
@@ -140,11 +143,18 @@ function saveElement() {
   var id = selectedNode.id;
   var elementTag = $("#element-tag").val();
   var elementType = $("#element-type").val();
-  var elementName = $("#element-name").val();
+  var elementName = $("#element-name").val().replace(/ /g, '&nbsp');
+  var elementIndex = $("#radio-form input[type='radio']:checked").val();
+  var elementIndexFrom = $("#edit-element-from").val();
+  var elementIndexTo = $("#edit-element-to").val();
 
   $('#action-tree').jstree(true).get_node(id).data.data_array[0] = elementTag;
   $('#action-tree').jstree(true).get_node(id).data.data_array[1] = elementType;
   $('#action-tree').jstree(true).get_node(id).data.data_array[2] = elementName;
+
+  $('#action-tree').jstree(true).get_node(id).data.Index[0] = elementIndex;
+  $('#action-tree').jstree(true).get_node(id).data.Index[1] = elementIndexFrom;
+  $('#action-tree').jstree(true).get_node(id).data.Index[2] = elementIndexTo;
 
   $('#action-tree').jstree("rename_node", selectedNode, elementTag);
 }
@@ -153,13 +163,46 @@ function createElement() {
 
 }
 
-function loadElement(tag, type, name) {
+function loadElement(tag, type, name, index, indexFrom, indexTo) {
     $.ajax({url: "edit-element.html", success: function(result){
         $("#panel-right").html(result);
         $("#element-tag").val(tag);
         $("#element-type").val(type);
         $("#element-name").val(name);
+
+        console.log("LOAD, index=" + index);
+        switch(index) {
+           case "first":
+               $("#radioFirst").prop("checked", true);
+               break;
+           case "all":
+               $("#radioAll").prop("checked", true);
+               break;
+           case "custom":
+               $("#radioCustom").prop("checked", true);
+               showRadioCustomDiv();
+               break;
+           default:
+               $("#radioFirst").prop("checked", true);
+        }
+
+        $("#edit-element-from").val(indexFrom);
+        $("#edit-element-to").val(indexTo);
     }});
+}
+
+function hideRadioCustomDiv() {
+    var x = document.getElementById("radio-custom-div");
+    if (x.style.display === "block") {
+        x.style.display = "none";
+    }
+}
+
+function showRadioCustomDiv() {
+    var x = document.getElementById("radio-custom-div");
+    if (x.style.display === "none") {
+        x.style.display = "block";
+    }
 }
 
 $("#tasks").click(function(){
@@ -276,7 +319,7 @@ $("#new-element").click(function(){
 var position = 'inside';
 var parent = $('#action-tree').jstree('get_selected');
 var tree = $("#action-tree").jstree(true);
-var newNode = { text: 'Link', type: 'file', icon: 'fas fa-font', 'data': { "data_array" : ["The Name", "text", "Unsaved"]  } };
+var newNode = { text: 'Link', type: 'file', icon: 'fas fa-font', 'data': { "data_array" : ["Tag", "Class/Id", "Name" ], "Index": ["first", 0, 0 ] } };
 
 var node = $('#action-tree').jstree(
     "create_node", parent, newNode, position, false, false);
@@ -299,9 +342,13 @@ $("#action-tree").bind(
                var elementTag = $('#action-tree').jstree(true).get_node(id).data.data_array[0];
                var elementType = $('#action-tree').jstree(true).get_node(id).data.data_array[1];
                var elementName = $('#action-tree').jstree(true).get_node(id).data.data_array[2];
+               var elementIndex = $('#action-tree').jstree(true).get_node(id).data.Index[0];
+               var elementIndexFrom = $('#action-tree').jstree(true).get_node(id).data.Index[1];
+               var elementIndexTo = $('#action-tree').jstree(true).get_node(id).data.Index[2];
 
-               loadElement(elementTag, elementType, elementName);
+               loadElement(elementTag, elementType, elementName, elementIndex, elementIndexFrom, elementIndexTo);
                console.log($('#action-tree').jstree(true).get_node(id).data.data_array);
+               console.log($('#action-tree').jstree(true).get_node(id).data.Index);
             }
         }
 );
