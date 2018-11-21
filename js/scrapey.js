@@ -1,13 +1,7 @@
 // SIDEBAR BUTTONS
-var localDataIndex = 0;
 var sidebar = document.getElementById("sidebar");
 var buttons = sidebar.getElementsByClassName("sidebar-button");
 var pageData;
-
-function Element(eName, eType){
-     this.Name = eName;
-     this.Type = eType;
-}
 
 function runScrapey(){
 var jsonNodes = $('#action-tree').jstree(true).get_json('#', { flat: true });
@@ -21,7 +15,7 @@ $.each(jsonNodes, function (i, val) {
        var indexFrom = val.data.Index[1];
        var indexTo = val.data.Index[2];
        console.log(site);
-       getData(site, tag, type, name, index, indexFrom, indexTo);
+       getTextData(site, tag, type, name, index, indexFrom, indexTo);
     }
     else
     {
@@ -73,20 +67,17 @@ function loadSite(site){
   document.getElementById('iframe').src = "www." + site;
 }
 
-function getData(site, tag, selector, name, index, indexFrom, indexTo){
-    console.log("getData");
+function getTextData(site, tag, selector, name, index, indexFrom, indexTo){
     var xmlhttp = new XMLHttpRequest();
     xmlhttp.open("GET", "php/get_data.php?site=" + site + "&tag=" + tag + "&selector=" + selector + "&name=" + name + "&index=" + index + "&indexfrom=" + indexFrom + "&indexto=" + indexTo, true);
     xmlhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
     xmlhttp.send();
-    console.log("send");
     xmlhttp.onreadystatechange = function() {
       if (this.readyState === 4 && this.status === 200) {
         var response = this.responseText;
-        console.log("done");
         console.log(response);
       } else {
-          console.log(this.status);
+
       };
    }
 }
@@ -163,8 +154,16 @@ function createElement() {
 
 }
 
-function loadElement(tag, type, name, index, indexFrom, indexTo) {
-    $.ajax({url: "edit-element.html", success: function(result){
+function loadTextElement(id) {
+  var tag = $('#action-tree').jstree(true).get_node(id).data.data_array[0];
+  var type = $('#action-tree').jstree(true).get_node(id).data.data_array[1];
+  var name = $('#action-tree').jstree(true).get_node(id).data.data_array[2];
+  var index = $('#action-tree').jstree(true).get_node(id).data.Index[0];
+  var indexFrom = $('#action-tree').jstree(true).get_node(id).data.Index[1];
+  var indexTo = $('#action-tree').jstree(true).get_node(id).data.Index[2];
+
+    $.ajax({url: "edit-text-element.html", success: function(result){
+
         $("#panel-right").html(result);
         $("#element-tag").val(tag);
         $("#element-type").val(type);
@@ -188,6 +187,60 @@ function loadElement(tag, type, name, index, indexFrom, indexTo) {
 
         $("#edit-element-from").val(indexFrom);
         $("#edit-element-to").val(indexTo);
+    }});
+}
+
+function loadLinkElement(id) {
+  var tag = $('#action-tree').jstree(true).get_node(id).data.data_array[0];
+  var type = $('#action-tree').jstree(true).get_node(id).data.data_array[1];
+  var name = $('#action-tree').jstree(true).get_node(id).data.data_array[2];
+  var index = $('#action-tree').jstree(true).get_node(id).data.Index[0];
+  var indexFrom = $('#action-tree').jstree(true).get_node(id).data.Index[1];
+  var indexTo = $('#action-tree').jstree(true).get_node(id).data.Index[2];
+
+    $.ajax({url: "edit-text-element.html", success: function(result){
+
+        $("#panel-right").html(result);
+        $("#element-tag").val(tag);
+        $("#element-type").val(type);
+        $("#element-name").val(name);
+
+        console.log("LOAD, index=" + index);
+        switch(index) {
+           case "first":
+               $("#radioFirst").prop("checked", true);
+               break;
+           case "all":
+               $("#radioAll").prop("checked", true);
+               break;
+           case "custom":
+               $("#radioCustom").prop("checked", true);
+               showRadioCustomDiv();
+               break;
+           default:
+               $("#radioFirst").prop("checked", true);
+        }
+
+        $("#edit-element-from").val(indexFrom);
+        $("#edit-element-to").val(indexTo);
+    }});
+}
+
+function loadImageElement() {
+
+}
+
+function loadClickElement() {
+
+}
+
+function loadErrorElement() {
+
+}
+
+function loadRootElement() {
+    $.ajax({url: "root-element.html", success: function(result){
+        $("#panel-right").html(result);
     }});
 }
 
@@ -313,13 +366,29 @@ $("#action-tree").on('loaded.jstree', function() {
     $('#action-tree').jstree('select_node', 'root');
 });
 
-// Create a new element
+// Create a text element
 
-$("#new-element").click(function(){
+$("#new-text-element").click(function(){
 var position = 'inside';
 var parent = $('#action-tree').jstree('get_selected');
 var tree = $("#action-tree").jstree(true);
-var newNode = { text: 'Link', type: 'file', icon: 'fas fa-font', 'data': { "data_array" : ["Tag", "Class/Id", "Name" ], "Index": ["first", 0, 0 ] } };
+var newNode = { text: 'Text', type: 'file', icon: 'fas fa-font', 'data': { "type" : "text", "data_array" : ["Tag", "Class/Id", "Name" ], "Index": ["first", 0, 0 ] } };
+
+var node = $('#action-tree').jstree(
+    "create_node", parent, newNode, position, false, false);
+$('#action-tree').jstree(
+    "deselect_all");
+$('#action-tree').jstree(
+    "select_node", node, false, false);
+});
+
+// Create a link element
+
+$("#new-link-element").click(function(){
+var position = 'inside';
+var parent = $('#action-tree').jstree('get_selected');
+var tree = $("#action-tree").jstree(true);
+var newNode = { text: 'Link', type: 'file', icon: 'fas fa-link', 'data': { "type" : "link", "data_array" : ["Tag", "Class/Id", "Name" ], "Index": ["first", 0, 0 ] } };
 
 var node = $('#action-tree').jstree(
     "create_node", parent, newNode, position, false, false);
@@ -335,20 +404,22 @@ $("#action-tree").bind(
         "select_node.jstree", function(evt, data){
             var id = $('#action-tree').jstree('get_selected', true)[0].id;
             if(id == "root"){
-               console.log("AT ROOT");
+               loadRootElement();
             }
             else
             {
-               var elementTag = $('#action-tree').jstree(true).get_node(id).data.data_array[0];
-               var elementType = $('#action-tree').jstree(true).get_node(id).data.data_array[1];
-               var elementName = $('#action-tree').jstree(true).get_node(id).data.data_array[2];
-               var elementIndex = $('#action-tree').jstree(true).get_node(id).data.Index[0];
-               var elementIndexFrom = $('#action-tree').jstree(true).get_node(id).data.Index[1];
-               var elementIndexTo = $('#action-tree').jstree(true).get_node(id).data.Index[2];
+               var type = $('#action-tree').jstree(true).get_node(id).data.type;
 
-               loadElement(elementTag, elementType, elementName, elementIndex, elementIndexFrom, elementIndexTo);
-               console.log($('#action-tree').jstree(true).get_node(id).data.data_array);
-               console.log($('#action-tree').jstree(true).get_node(id).data.Index);
+               switch(type) {
+                    case "text":
+                       loadTextElement(id);
+                       break;
+                    case "link":
+                       loadLinkElement(id);
+                       break;
+                    default:
+                       loadErrorElement();
+               }
             }
         }
 );
