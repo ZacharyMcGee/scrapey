@@ -2,20 +2,43 @@
 var sidebar = document.getElementById("sidebar");
 var buttons = sidebar.getElementsByClassName("sidebar-button");
 var pageData;
+var results = []
 
 function runScrapey(){
 var jsonNodes = $('#action-tree').jstree(true).get_json('#', { flat: true });
+var treeSize = $('#action-tree').jstree(true).get_json('#', { flat: true }).length;
+
 var site;
+results = [];
+results[0] = 0;
+var counter = 0;
 $.each(jsonNodes, function (i, val) {
     if(i != 0) {
-       var tag = val.data.data_array[0];
-       var type = val.data.data_array[1];
-       var name = val.data.data_array[2];
-       var index = val.data.Index[0];
-       var indexFrom = val.data.Index[1];
-       var indexTo = val.data.Index[2];
-       console.log(site);
-       getTextData(site, tag, type, name, index, indexFrom, indexTo);
+       var elementType = val.data.type;
+
+       switch(elementType) {
+         case "text":
+            var tag = val.data.data_array[0];
+            var type = val.data.data_array[1];
+            var name = val.data.data_array[2];
+            var index = val.data.Index[0];
+            var indexFrom = val.data.Index[1];
+            var indexTo = val.data.Index[2];
+            getTextData(site, tag, type, name, index, indexFrom, indexTo, counter, treeSize);
+            break;
+         case "link":
+            var tag = val.data.data_array[0];
+            var type = val.data.data_array[1];
+            var name = val.data.data_array[2];
+            var index = val.data.Index[0];
+            var indexFrom = val.data.Index[1];
+            var indexTo = val.data.Index[2];
+            getLinkData(site, tag, type, name, index, indexFrom, indexTo, counter, treeSize);
+            break;
+         default:
+            break;
+       }
+       counter++;
     }
     else
     {
@@ -67,15 +90,45 @@ function loadSite(site){
   document.getElementById('iframe').src = "www." + site;
 }
 
-function getTextData(site, tag, selector, name, index, indexFrom, indexTo){
+function getTextData(site, tag, selector, name, index, indexFrom, indexTo, counter, treeSize){
     var xmlhttp = new XMLHttpRequest();
-    xmlhttp.open("GET", "php/get_data.php?site=" + site + "&tag=" + tag + "&selector=" + selector + "&name=" + name + "&index=" + index + "&indexfrom=" + indexFrom + "&indexto=" + indexTo, true);
+    xmlhttp.open("GET", "php/get_text.php?site=" + site + "&tag=" + tag + "&selector=" + selector + "&name=" + name + "&index=" + index + "&indexfrom=" + indexFrom + "&indexto=" + indexTo, true);
+    xmlhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    xmlhttp.send();
+    xmlhttp.onreadystatechange = function() {
+      if (this.readyState === 4 && this.status === 200) {
+        var response = this.responseText;   // All requests must be async, so we have to rig a way to order our results
+        results[counter + 1] = response;    // We offset by one since results[0] will count the requests we are going to send
+        results[0]++;                       // We increment results[0] by one to track how many requests are completed
+        if(results[0] == treeSize - 1){     // This is the last response, we can now return the data
+           returnData();
+        }
+      } else {
+
+      };
+   }
+}
+
+function returnData(){
+  console.log(results);
+  for (var i = 0; i < results.length; i++) {
+      console.log(results[i]);
+  }
+}
+
+function getLinkData(site, tag, selector, name, index, indexFrom, indexTo, counter, treeSize){
+    var xmlhttp = new XMLHttpRequest();
+    xmlhttp.open("GET", "php/get_link.php?site=" + site + "&tag=" + tag + "&selector=" + selector + "&name=" + name + "&index=" + index + "&indexfrom=" + indexFrom + "&indexto=" + indexTo, true);
     xmlhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
     xmlhttp.send();
     xmlhttp.onreadystatechange = function() {
       if (this.readyState === 4 && this.status === 200) {
         var response = this.responseText;
-        console.log(response);
+        results[counter + 1] = response;
+        results[0]++;
+        if(results[0] == treeSize - 1){
+           returnData();
+        }
       } else {
 
       };
