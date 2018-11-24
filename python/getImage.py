@@ -23,20 +23,19 @@ soup = BeautifulSoup(page, 'html.parser')
 
 if index == indexFirst:
   results = soup.findAll(tag, {selector: name})
-  for tag in results:
-    images = tag.findAll('img')
-    print(images[0]['src'])
+  img = results[0].findAll('img')
+  print(img[0]['src'])
 elif index == indexAll:
   results = soup.findAll(tag, {selector: name})
   for tag in results:
     images = tag.findAll('img')
-    for a in links:
-        print(a[0]['src'])
+    print(images[0]['src'])
 elif index == indexCustom:
   results = soup.findAll(tag, {selector: name})
-  for tag in results:
-    links = tag.findAll('a')
-    for x in range(indexFrom, indexTo):
-        print(links[x])
+  indexFrom = int(sys.argv[6])
+  indexTo = int(sys.argv[7])
+  for x in range(indexFrom, indexTo):
+      img = results[x].findAll('img')
+      print(img[0]['src'])
 else:
   results = "error"
