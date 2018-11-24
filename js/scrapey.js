@@ -2,20 +2,29 @@
 var sidebar = document.getElementById("sidebar");
 var buttons = sidebar.getElementsByClassName("sidebar-button");
 var pageData;
-var results = []
-
-function runScrapey(){
-var jsonNodes = $('#action-tree').jstree(true).get_json('#', { flat: true });
-var treeSize = $('#action-tree').jstree(true).get_json('#', { flat: true }).length;
-
-var site;
-results = [];
-results[0] = 0;
+var results = [];
 var counter = 0;
+var site;
+
+function startScrapey(){
+  results = [];
+  var element = {
+    index: ['0'],
+    value: ['0']
+  };
+  results.push(element);
+  counter = 0;
+  var jsonNodes = $('#action-tree').jstree(true).get_json('#', { flat: true });
+  var treeSize = $('#action-tree').jstree(true).get_json('#', { flat: true }).length;
+  site = $('#action-tree').jstree(true).get_node('root').text;
+  runScrapey(jsonNodes, treeSize);
+}
+
+function runScrapey(jsonNodes, treeSize){
+console.log("RUNNING SCRAPEY");
 $.each(jsonNodes, function (i, val) {
     if(i != 0) {
        var elementType = val.data.type;
-
        switch(elementType) {
          case "text":
             var tag = val.data.data_array[0];
@@ -24,6 +33,7 @@ $.each(jsonNodes, function (i, val) {
             var index = val.data.Index[0];
             var indexFrom = val.data.Index[1];
             var indexTo = val.data.Index[2];
+            console.log("TEXT -- Counter == " + counter);
             getTextData(site, tag, type, name, index, indexFrom, indexTo, counter, treeSize);
             break;
          case "link":
@@ -33,17 +43,32 @@ $.each(jsonNodes, function (i, val) {
             var index = val.data.Index[0];
             var indexFrom = val.data.Index[1];
             var indexTo = val.data.Index[2];
+            console.log("Link -- Counter == " + counter);
+
             getLinkData(site, tag, type, name, index, indexFrom, indexTo, counter, treeSize);
+            break;
+         case "image":
+            var tag = val.data.data_array[0];
+            var type = val.data.data_array[1];
+            var name = val.data.data_array[2];
+            var index = val.data.Index[0];
+            var indexFrom = val.data.Index[1];
+            var indexTo = val.data.Index[2];
+            getImageData(site, tag, type, name, index, indexFrom, indexTo, counter, treeSize);
+            break;
+         case "page":
+            for(i = 0; i < 3; i++){
+              console.log("PAGE COUNTER: " + counter);
+              var jsonSubNodes = $('#action-tree').jstree(true).get_json(val, { flat: true });
+              runScrapey(jsonSubNodes, treeSize);
+            }
+            return false;
             break;
          default:
             break;
        }
        counter++;
-    }
-    else
-    {
-       site = val.text;
-    }
+      }
   })
 }
 
@@ -98,22 +123,19 @@ function getTextData(site, tag, selector, name, index, indexFrom, indexTo, count
     xmlhttp.onreadystatechange = function() {
       if (this.readyState === 4 && this.status === 200) {
         var response = this.responseText;   // All requests must be async, so we have to rig a way to order our results
-        results[counter + 1] = response;    // We offset by one since results[0] will count the requests we are going to send
-        results[0]++;                       // We increment results[0] by one to track how many requests are completed
-        if(results[0] == treeSize - 1){     // This is the last response, we can now return the data
+                var element = {
+          index: [counter],
+          value: [response]
+        };
+        results.push(element);  // We offset by one since results[0] will count the requests we are going to send
+        results[0].value++;                       // We increment results[0] by one to track how many requests are completed
+        if(results[0].value == treeSize - 1){     // This is the last response, we can now return the data
            returnData();
         }
       } else {
 
       };
    }
-}
-
-function returnData(){
-  console.log(results);
-  for (var i = 0; i < results.length; i++) {
-      console.log(results[i]);
-  }
 }
 
 function getLinkData(site, tag, selector, name, index, indexFrom, indexTo, counter, treeSize){
@@ -124,7 +146,34 @@ function getLinkData(site, tag, selector, name, index, indexFrom, indexTo, count
     xmlhttp.onreadystatechange = function() {
       if (this.readyState === 4 && this.status === 200) {
         var response = this.responseText;
-        results[counter + 1] = response;
+        var element = {
+          index: [counter],
+          value: [response]
+        };
+        results.push(element);
+        results[0].value++;
+        if(results[0].value == treeSize - 1){
+           returnData();
+        }
+      } else {
+
+      };
+   }
+}
+
+function getImageData(site, tag, selector, name, index, indexFrom, indexTo, counter, treeSize){
+    var xmlhttp = new XMLHttpRequest();
+    xmlhttp.open("GET", "php/get_image.php?site=" + site + "&tag=" + tag + "&selector=" + selector + "&name=" + name + "&index=" + index + "&indexfrom=" + indexFrom + "&indexto=" + indexTo, true);
+    xmlhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    xmlhttp.send();
+    xmlhttp.onreadystatechange = function() {
+      if (this.readyState === 4 && this.status === 200) {
+        var response = this.responseText;
+        var element = {
+          index: [counter],
+          value: [response]
+        };
+        results.push(element);
         results[0]++;
         if(results[0] == treeSize - 1){
            returnData();
@@ -133,6 +182,15 @@ function getLinkData(site, tag, selector, name, index, indexFrom, indexTo, count
 
       };
    }
+}
+
+
+function returnData(){
+  const list = results.sort((v1, v2) => v1.index - v2.index).map((v) => v.value);
+  console.log(list);
+  for(var i = 0; i < results.length; i++){
+    console.log(list[i]);
+  }
 }
 
 function refreshData(){
@@ -279,12 +337,75 @@ function loadLinkElement(id) {
     }});
 }
 
-function loadImageElement() {
+function loadImageElement(id) {
+  var tag = $('#action-tree').jstree(true).get_node(id).data.data_array[0];
+  var type = $('#action-tree').jstree(true).get_node(id).data.data_array[1];
+  var name = $('#action-tree').jstree(true).get_node(id).data.data_array[2];
+  var index = $('#action-tree').jstree(true).get_node(id).data.Index[0];
+  var indexFrom = $('#action-tree').jstree(true).get_node(id).data.Index[1];
+  var indexTo = $('#action-tree').jstree(true).get_node(id).data.Index[2];
+    console.log("load image element");
+    $.ajax({url: "edit-image-element.html", success: function(result){
 
+        $("#panel-right").html(result);
+        $("#element-tag").val(tag);
+        $("#element-type").val(type);
+        $("#element-name").val(name);
+
+        console.log("LOAD, index=" + index);
+        switch(index) {
+           case "first":
+               $("#radioFirst").prop("checked", true);
+               break;
+           case "all":
+               $("#radioAll").prop("checked", true);
+               break;
+           case "custom":
+               $("#radioCustom").prop("checked", true);
+               showRadioCustomDiv();
+               break;
+           default:
+               $("#radioFirst").prop("checked", true);
+        }
+
+        $("#edit-element-from").val(indexFrom);
+        $("#edit-element-to").val(indexTo);
+    }});
 }
 
-function loadClickElement() {
+function loadClickElement(id) {
+  var tag = $('#action-tree').jstree(true).get_node(id).data.data_array[0];
+  var type = $('#action-tree').jstree(true).get_node(id).data.data_array[1];
+  var name = $('#action-tree').jstree(true).get_node(id).data.data_array[2];
+  var index = $('#action-tree').jstree(true).get_node(id).data.Index[0];
+  var indexFrom = $('#action-tree').jstree(true).get_node(id).data.Index[1];
+  var indexTo = $('#action-tree').jstree(true).get_node(id).data.Index[2];
+    $.ajax({url: "edit-page-element.html", success: function(result){
 
+        $("#panel-right").html(result);
+        $("#element-tag").val(tag);
+        $("#element-type").val(type);
+        $("#element-name").val(name);
+
+        console.log("LOAD, index=" + index);
+        switch(index) {
+           case "first":
+               $("#radioFirst").prop("checked", true);
+               break;
+           case "all":
+               $("#radioAll").prop("checked", true);
+               break;
+           case "custom":
+               $("#radioCustom").prop("checked", true);
+               showRadioCustomDiv();
+               break;
+           default:
+               $("#radioFirst").prop("checked", true);
+        }
+
+        $("#edit-element-from").val(indexFrom);
+        $("#edit-element-to").val(indexTo);
+    }});
 }
 
 function loadErrorElement() {
@@ -451,6 +572,39 @@ $('#action-tree').jstree(
     "select_node", node, false, false);
 });
 
+
+// Create an image element
+
+$("#new-image-element").click(function(){
+var position = 'inside';
+var parent = $('#action-tree').jstree('get_selected');
+var tree = $("#action-tree").jstree(true);
+var newNode = { text: 'Link', type: 'file', icon: 'fas fa-image', 'data': { "type" : "image", "data_array" : ["Tag", "Class/Id", "Name" ], "Index": ["first", 0, 0 ] } };
+
+var node = $('#action-tree').jstree(
+    "create_node", parent, newNode, position, false, false);
+$('#action-tree').jstree(
+    "deselect_all");
+$('#action-tree').jstree(
+    "select_node", node, false, false);
+});
+
+// Create an image element
+
+$("#new-page-element").click(function(){
+var position = 'inside';
+var parent = $('#action-tree').jstree('get_selected');
+var tree = $("#action-tree").jstree(true);
+var newNode = { text: 'Link', type: 'file', icon: 'fas fa-mouse-pointer', 'data': { "type" : "page", "data_array" : ["Tag", "Class/Id", "Name" ], "Index": ["first", 0, 0 ] } };
+
+var node = $('#action-tree').jstree(
+    "create_node", parent, newNode, position, false, false);
+$('#action-tree').jstree(
+    "deselect_all");
+$('#action-tree').jstree(
+    "select_node", node, false, false);
+});
+
 // Selecting an element
 
 $("#action-tree").bind(
@@ -470,6 +624,8 @@ $("#action-tree").bind(
                     case "link":
                        loadLinkElement(id);
                        break;
+                    case "image":
+                       loadImageElement(id);
                     default:
                        loadErrorElement();
                }
