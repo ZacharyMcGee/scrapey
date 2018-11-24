@@ -23,9 +23,8 @@ soup = BeautifulSoup(page, 'html.parser')
 
 if index == indexFirst:
   results = soup.findAll(tag, {selector: name})
-  for tag in results:
-    links = tag.findAll('a')
-    print(links[0])
+  links = results[0].findAll('a')
+  print(links[0]['href'])
 elif index == indexAll:
   results = soup.findAll(tag, {selector: name})
   for tag in results:
@@ -34,9 +33,10 @@ elif index == indexAll:
         print(a['href'])
 elif index == indexCustom:
   results = soup.findAll(tag, {selector: name})
-  for tag in results:
-    links = tag.findAll('a')
-    for x in range(indexFrom, indexTo):
-        print(links[x])
+  indexFrom = int(sys.argv[6])
+  indexTo = int(sys.argv[7])
+  for x in range(indexFrom, indexTo):
+      links = results[x].findAll('a')
+      print(links[0]['href'])
 else:
   results = "error"
