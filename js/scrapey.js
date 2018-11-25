@@ -17,13 +17,13 @@ function startScrapey(){
   var jsonNodes = $('#action-tree').jstree(true).get_json('#', { flat: true });
   var treeSize = $('#action-tree').jstree(true).get_json('#', { flat: true }).length;
   site = $('#action-tree').jstree(true).get_node('root').text;
-  runScrapey(jsonNodes, treeSize);
+  runScrapey(jsonNodes, treeSize, 0);
 }
 
-function runScrapey(jsonNodes, treeSize){
-console.log("RUNNING SCRAPEY");
+function runScrapey(jsonNodes, treeSize, startPoint){
+console.log("RUNNING SCRAPEY AT " + startPoint);
 $.each(jsonNodes, function (i, val) {
-    if(i != 0) {
+    if(i > startPoint) {
        var elementType = val.data.type;
        switch(elementType) {
          case "text":
@@ -33,7 +33,6 @@ $.each(jsonNodes, function (i, val) {
             var index = val.data.Index[0];
             var indexFrom = val.data.Index[1];
             var indexTo = val.data.Index[2];
-            console.log("TEXT -- Counter == " + counter);
             getTextData(site, tag, type, name, index, indexFrom, indexTo, counter, treeSize);
             break;
          case "link":
@@ -43,8 +42,6 @@ $.each(jsonNodes, function (i, val) {
             var index = val.data.Index[0];
             var indexFrom = val.data.Index[1];
             var indexTo = val.data.Index[2];
-            console.log("Link -- Counter == " + counter);
-
             getLinkData(site, tag, type, name, index, indexFrom, indexTo, counter, treeSize);
             break;
          case "image":
@@ -57,11 +54,16 @@ $.each(jsonNodes, function (i, val) {
             getImageData(site, tag, type, name, index, indexFrom, indexTo, counter, treeSize);
             break;
          case "page":
-            for(i = 0; i < 3; i++){
-              console.log("PAGE COUNTER: " + counter);
-              var jsonSubNodes = $('#action-tree').jstree(true).get_json(val, { flat: true });
-              runScrapey(jsonSubNodes, treeSize);
+            var jsonSubNodes = $('#action-tree').jstree(true).get_json(val, { flat: true });
+            var pageAmt = 3;
+            results[0].value++;
+            treeSize += (pageAmt - 1);
+            for(i = 0; i < pageAmt; i++){
+              runScrapey(jsonSubNodes, treeSize, 0);
             }
+            jsonSubNodesLength = jsonSubNodes.length - 1;
+            var newStartPoint = jsonSubNodesLength + (i - 1);
+            runScrapey(jsonNodes, treeSize, newStartPoint);
             return false;
             break;
          default:
@@ -70,6 +72,7 @@ $.each(jsonNodes, function (i, val) {
        counter++;
       }
   })
+  console.log("DONE!!");
 }
 
 for (var i = 0; i < buttons.length; i++) {
@@ -174,8 +177,8 @@ function getImageData(site, tag, selector, name, index, indexFrom, indexTo, coun
           value: [response]
         };
         results.push(element);
-        results[0]++;
-        if(results[0] == treeSize - 1){
+        results[0].value++;
+        if(results[0].value == treeSize - 1){
            returnData();
         }
       } else {
@@ -217,13 +220,56 @@ function refreshData(){
 
       };
     }
-}
   }
+}
+
+function saveTree(){
+    var v = $('#action-tree').jstree(true).get_json('#', {flat:true});
+
+    var jsondatastring = JSON.stringify(v);
+    var name = document.getElementById("input-name").value;
+    var url = document.getElementById("input-site").value;
+
+    console.log("SAVING : " + jsondatastring);
+                $.ajax({
+                    type: "POST",
+                    url: 'php/save_tree.php',
+                    data: { jsondata : jsondatastring, name : name, url : url },
+                    success: function(data)
+                    {
+                        alert("success!");
+                    }
+                });
+}
+
+function loadTreeFromDB(taskId){
+    $.ajax({url: "new-task.php", success: function(result){
+        $("#content").html(result);
+        reloadScrapey();
+    var xmlhttp = new XMLHttpRequest();
+    console.log("Getting: " + taskId);
+    xmlhttp.open("GET", "php/get_tree.php?task=" + taskId, true);
+    xmlhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    xmlhttp.send();
+    console.log("Starting request");
+    xmlhttp.onreadystatechange = function() {
+      if (this.readyState === 4 && this.status === 200) {
+        console.log("request done");
+        var response = '[' + JSON.parse(this.response) + ']';
+        var response2 = '[{ "id": "root", "parent": "#", "text": "https://www.zmcgee.com" , "icon": "fas fa-link" }]';
+        var myJSON = JSON.parse(response);
+        createJSTree(myJSON);
+      } else {
+
+      };
+    }
+    }});
+
+
+}
 
 function loadTree(site){
-            var jsondata = [
-                           { "id": "root", "parent": "#", "text": site , "icon": "fas fa-link" },
-            ];
+            var jsondata = [ { "id": "root", "parent": "#", "text": site , "icon": "fas fa-link" } ];
 
             createJSTree(jsondata);
 }
@@ -433,20 +479,20 @@ function showRadioCustomDiv() {
 }
 
 $("#tasks").click(function(){
-    $.ajax({url: "tasks.html", success: function(result){
+    $.ajax({url: "tasks.php", success: function(result){
         $("#content").html(result);
         reloadScrapey();
     }});
 });
 
 $("#dashboard").click(function(){
-    $.ajax({url: "dashboard.html", success: function(result){
+    $.ajax({url: "dashboard.php", success: function(result){
         $("#content").html(result);
     }});
 });
 
 $("#newtask").click(function(){
-    $.ajax({url: "new-task.html", success: function(result){
+    $.ajax({url: "new-task.php", success: function(result){
         $("#content").html(result);
         reloadScrapey();
     }});
