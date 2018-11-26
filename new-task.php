@@ -32,9 +32,10 @@
           <div class="panel-container">
             <div class="panel-left">
                   <div class="task-toolbar">
-                <button class="toolbar-button-new" id="new-element"><i class="fas fa-font fa-sm" style="padding-top:4px; padding-right:4px;"></i>Text</button>
-                <button class="toolbar-button-new" id="new-element"><i class="fas fa-link fa-sm" style="padding-top:4px; padding-right:4px;"></i>Link</button>
-                <button class="toolbar-button-new" id="new-element"><i class="fas fa-mouse-pointer fa-sm" style="padding-top:4px; padding-right:4px;"></i>Action</button>
+                <button class="toolbar-button-new" id="new-text-element"><i class="fas fa-font fa-sm" style="padding-top:4px; padding-right:4px;"></i>Text</button>
+                <button class="toolbar-button-new" id="new-link-element"><i class="fas fa-link fa-sm" style="padding-top:4px; padding-right:4px;"></i>Link</button>
+                <button class="toolbar-button-new" id="new-image-element"><i class="fas fa-image fa-sm" style="padding-top:4px; padding-right:4px;"></i>Image</button>
+                <button class="toolbar-button-new" id="new-page-element"><i class="fas fa-mouse-pointer fa-sm" style="padding-top:4px; padding-right:4px;"></i>Page</button>
               </div>
               <div class="action-tree" id="action-tree">
 
@@ -58,6 +59,8 @@
 
       </div>
     </div>
-      <button class="run-button" id="runscrapey" onclick="runScrapey()"><i class="fas fa-arrow-down fa-sm" style="padding-top:4px; padding-right:4px;"></i>Run</button>
+
+      <button class="run-button" id="runscrapey" onclick="saveTree()"><i class="fas fa-arrow-down fa-sm" style="padding-top:4px; padding-right:4px;"></i>Save</button>
+      <button class="run-button" id="runscrapey" onclick="startScrapey()"><i class="fas fa-arrow-down fa-sm" style="padding-top:4px; padding-right:4px;"></i>Run</button>
   </div>
 </div>
