@@ -269,9 +269,17 @@ function loadTreeFromDB(taskId){
 }
 
 function loadTree(site){
-            var jsondata = [ { "id": "root", "parent": "#", "text": site , "icon": "fas fa-link" } ];
-
-            createJSTree(jsondata);
+  var jsondata2 = [ { "id": "root", "parent": "#", "text": site , "icon": "fas fa-link" } ];
+  var jsondatastring = JSON.stringify(jsondata2);
+  $.ajax({
+    type: "POST",
+    url: 'php/new_tree.php',
+    data: { jsondata : jsondatastring, name : name, url : url },
+    success: function(data)
+    {
+       alert("success!");
+    }
+  });
 }
 
 function validateURL(url){
