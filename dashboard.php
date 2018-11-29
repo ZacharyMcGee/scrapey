@@ -1,8 +1,27 @@
 <?php
 session_start();
+// check to see if the user is logged in
 if ($_SESSION['loggedin']) {
+require_once 'config.php';
+
+
+$con = mysqli_connect($DB_HOST, $DB_USER, $DB_PASS, $DB_NAME);
+if ( mysqli_connect_errno() ) {
+	die ('Failed to connect to MySQL: ' . mysqli_connect_error());
+}
+
+$sql = "SELECT username FROM accounts WHERE id=" . $_SESSION['id'];
+$result = $con->query($sql);
+if ($result->num_rows > 0) {
+    while($row = $result->fetch_assoc()) {
+       $username = $row["username"];
+    }
+} else {
+    $username = "Unavailable";
+}
 
 } else {
+	// user is not logged in, send the user to the login page
 	header('Location: index.php');
 }
 ?>
@@ -24,10 +43,11 @@ if ($_SESSION['loggedin']) {
 <body>
   <div id="sidebar" class="sidebar">
     <div class="sidebar-header">
-      <img src="images/logo.png" alt="logo" />
+      <a href="https://scrapey.io/dashboard.php"><img src="images/logo.png"/></a>
     </div>
     <div class="sidebar-menu">
       <a href="#" class="sidebar-button active" id="dashboard"><i class="fas fa-tachometer-alt"></i><span class="parent-link">Dashboard</span></a>
+      <a href="#" class="sidebar-button" id="tasks"><i class="fas fa-tasks"></i><span class="parent-link">Tasks</span></a>
       <a href="#" class="sidebar-button" id="tasks"><i class="fas fa-tasks"></i><span class="parent-link">Tasks</span></a>
     </div>
 </div>
@@ -35,7 +55,22 @@ if ($_SESSION['loggedin']) {
   <div class="header">
     <div class="header-img">
     </div>
-
+    <div class="header-account-info">
+    <div class="header-menu-buttons">
+      <i class="fas fa-bell fa-lg" style="color: #263544; margin-right:10px;"></i>
+      <i class="fas fa-question-circle fa-lg" style="color: #263544;"></i>
+    </div>
+    <div class="header-account-username">
+      <p><i class="fas fa-user fa-lg" style="color: #263544;"></i><?php echo "<a href='account.php'>" . $username . "</a>"?></p>
+    </div>
+     <i class="fas fa-caret-down fa-sm" onclick="openDropdown('account-dropdown')" style="color: #263544; margin-top: 4px; cursor: pointer;"></i>
+      <div class="account-dropdown" id="account-dropdown">
+        <i class="fas fa-caret-up" style="margin-top:-20px;position: absolute;top: 9px;color: white;left: 142px;"></i>
+        <a href="#">Link 1</a>
+        <a href="#">Link 2</a>
+        <a href="logout.php">Logout</a>
+      </div>
+    </div>
     <div class="header-menu-bar">
       <ul>
         <li><a href="#" id="button1">Home</a></li>
@@ -44,6 +79,7 @@ if ($_SESSION['loggedin']) {
         <li><a href="#" onClick="scrollToSection('#design')">Link</a></li>
       </ul>
     </div>
+
   </div>
 
   <div class="main" id="main">
