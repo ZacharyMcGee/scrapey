@@ -28,7 +28,7 @@ elif index == indexAll:
   all = soup.findAll(tag, {selector: name})
   i = len(all)
   for x in range(0, i - 1):
-    print(all[x].text)
+    print(all[x].text + "\u0001")
 elif index == indexCustom:
   indexFrom = int(sys.argv[6])
   indexTo = int(sys.argv[7])
