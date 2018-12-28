@@ -8,7 +8,6 @@ indexFirst = "first"
 indexAll = "all"
 indexCustom = "custom"
 
-# specify the url
 url = sys.argv[1]
 tag = sys.argv[2]
 selector = sys.argv[3]
