@@ -15,10 +15,8 @@ selector = sys.argv[3]
 name = sys.argv[4]
 index = sys.argv[5]
 
-# query the website and return the html to the variable ‘page’
 page = urllib.request.urlopen(url)
 
-# parse the html using beautiful soup and store in variable `soup`
 soup = BeautifulSoup(page, 'html.parser')
 
 if index == indexFirst:
